@@ -1,26 +1,34 @@
 package com.example.junittesting.controller;
 
 import com.example.junittesting.entity.Employee;
+import com.example.junittesting.exceptions.ControllerException;
 import com.example.junittesting.service.EmployeeService;
+import com.example.junittesting.service.EmployeeServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/code")
 public class EmployeeController {
 
     @Autowired
-    private EmployeeService employeeServiceInterface;
+    private EmployeeServiceInterface employeeServiceInterface;
+
+//    @PostMapping("/save")
+//    public ResponseEntity<?> addEmployee(@RequestBody Employee employee){
+//        try{
+//            Employee employeeSaved = employeeServiceInterface.addEmployee(employee);
+//            return new ResponseEntity<Employee>(employeeSaved,HttpStatus.CREATED);
+//        }
+//    }
 
     @GetMapping("/emp/{empid}")
-    public ResponseEntity<?> fetchEmployeeById(@PathVariable("empid") Long empidL){
+    public ResponseEntity<?> fetchEmployeeDetails(@PathVariable("empId") Long id){
         try{
-            return new ResponseEntity<Employee>(employeeServiceInterface.getEmpById(empidL), HttpStatus.OK);
+            return new ResponseEntity<Employee>(employeeServiceInterface.findById(id), HttpStatus.OK);
         }catch (Exception e) {
-            ControllerException controllerException = new ControllerException(e.getMessage() + " " + e.getCause());
+            ControllerException controllerException = new ControllerException(e.getMessage() + "Exception occured while fetching data " + e.getCause());
                     return new ResponseEntity<ControllerException>(controllerException, HttpStatus.BAD_REQUEST);
         }
     }
